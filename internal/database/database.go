@@ -1,6 +1,7 @@
 package database
 
 import (
+	"Fanduel_Gen/internal/types"
 	"context"
 	"database/sql"
 	"fmt"
@@ -22,6 +23,9 @@ type Service interface {
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
+
+	InsertPlayer(types.Player) error
+	InsertPassingStats(types.PassingStats) error
 }
 
 type service struct {
