@@ -1,5 +1,14 @@
 package types
 
+type NextGenStatsResponseRoot struct {
+	Season     int            `json:"season"`
+	SeasonType string         `json:"seasonType"`
+	Week       int            `json:"week"`
+	Filter     string         `json:"filter"`
+	Threshold  int            `json:"threshold"`
+	Stats      []PassingStats `json:"stats"`
+}
+
 type PassingStats struct {
 	Aggressiveness                       float64 `json:"aggressiveness"`
 	Attempts                             int     `json:"attempts"`

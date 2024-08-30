@@ -19,22 +19,17 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/web", echo.WrapHandler(templ.Handler(web.HelloForm())))
 	e.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.HelloWebHandler)))
 
-	e.GET("/", s.HelloWorldHandler)
+	apiGroup := e.Group("/api")
+	firstVersion := apiGroup.Group("/v1")
 
-	e.GET("/health", s.healthHandler)
-	e.GET("/prev_nfl_stats", s.PrveNFLStatsHandler)
+	// Next Gen Stats
+	statsGroup := firstVersion.Group("/stats")
+	statsGroup.GET("/next_gen_passing", s.NextGenPassingHandler)
+	statsGroup.GET("/next_gen_rushing", s.NextGenRushingHandler)
+
+	// procections
+	projections := firstVersion.Group("/projections")
+	projections.GET("/rotowire", s.RotoWireHandler)
 
 	return e
-}
-
-func (s *Server) HelloWorldHandler(c echo.Context) error {
-	resp := map[string]string{
-		"message": "Hello World",
-	}
-
-	return c.JSON(http.StatusOK, resp)
-}
-
-func (s *Server) healthHandler(c echo.Context) error {
-	return c.JSON(http.StatusOK, s.db.Health())
 }

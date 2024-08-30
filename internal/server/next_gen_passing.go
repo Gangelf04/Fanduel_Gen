@@ -10,12 +10,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (s *Server) PrveNFLStatsHandler(c echo.Context) error {
+func (s *Server) NextGenPassingHandler(c echo.Context) error {
+	season := c.QueryParam("season")
+
+	if season == "" {
+		return c.String(http.StatusBadRequest, "Missing season query param")
+	}
+
 	client := http.Client{}
 
 	for i := 1; i <= 18; i++ {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://nextgenstats.nfl.com/api/statboard/passing?season=2023&seasonType=REG&week=%d", i), nil)
-		req.Header.Set("Referer", fmt.Sprintf("https://nextgenstats.nfl.com/stats/passing/2023/REG/%d", i))
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://nextgenstats.nfl.com/api/statboard/passing?season=%s&seasonType=REG&week=%d", season, i), nil)
+		req.Header.Set("Referer", fmt.Sprintf("https://nextgenstats.nfl.com/stats/passing/%s/REG/%d", season, i))
 
 		if err != nil {
 			log.Print(err)
@@ -43,9 +49,7 @@ func (s *Server) PrveNFLStatsHandler(c echo.Context) error {
 			if err != nil {
 				log.Print(err)
 			}
-
 		}
-
 	}
 
 	return c.JSON(http.StatusOK, nil)
